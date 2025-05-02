@@ -53,7 +53,7 @@ KEDS uses a `.env` file in the project root directory to manage configuration se
     RPC_PASSWORD=rpcpassword
 
     # Pool Address used by DATUM and CPUMiner
-    POOL_ADDRESS=bc1qqjragv6053f64sqjkny683ltp8tgqe02e9esjm
+    POOL_ADDRESS=bc1q676lj6ttgpu7p25uk3ex2thyxdrvralct2upl4
 
     # Optional Coinbase Tag for DATUM
     COINBASE_TAG_SECONDARY="Cosmic Rocks"
