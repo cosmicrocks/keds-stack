@@ -1,5 +1,4 @@
 name: keds
-
 services:
 
   knots:
@@ -8,7 +7,6 @@ services:
       context: docker/knots
       args:
         - KNOTS_VERSION=28.1.knots20250305
-    # Pass credentials as environment variables from .env file
     environment:
       - RPC_USER=${RPC_USER}
       - RPC_PASSWORD=${RPC_PASSWORD}
@@ -16,12 +14,12 @@ services:
       - ${PWD}/data/bitcoin:/data/.bitcoin
     restart: on-failure
     ports:
-      # RPC interface
       - "8332:8332"
-      # P2P network
       - "8333:8333"
-      # ZMQ ports
       - "8443:8443"
+    networks:
+      - default
+      - external_net
 
   electrs:
     container_name: electrs
@@ -30,7 +28,6 @@ services:
     build:
       context: docker/electrs
     environment:
-      # Use variables defined in .env file
       BITCOIN_RPC_USER: "${RPC_USER}"
       BITCOIN_RPC_PASSWORD: "${RPC_PASSWORD}"
       ELECTRS_NETWORK: "bitcoin"
@@ -42,13 +39,13 @@ services:
       ELECTRS_WAIT_DURATION_SECS: "1"
       ELECTRS_MONITORING_ADDR: "0.0.0.0:4224"
       ELECTRS_LOG_FILTERS: "INFO"
-      ELECTRS_DB_DIR: "/data" # Ensure this is set for the entrypoint
+      ELECTRS_DB_DIR: "/data"
     volumes:
       - ${PWD}/data/electrs:/data
     restart: always
     ports:
       - "50001:50001"
-      - "4224:4224" # Expose metrics port
+      - "4224:4224"
 
   datum:
     container_name: datum
@@ -58,20 +55,20 @@ services:
       context: docker/datum
     environment:
       DATUM_RPCURL: "knots:8332"
-      # Use variable defined in .env file
       DATUM_POOL_ADDRESS: "${POOL_ADDRESS}"
       DATUM_COINBASE_TAG_PRIMARY: "DATUM Gateway"
-      # Use variable defined in .env file
       DATUM_COINBASE_TAG_SECONDARY: "${COINBASE_TAG_SECONDARY}"
     ports:
       - "23334:23334"
-      - "8081:8080"
+      - "8080:8080"
+    networks:
+      - default
+      - external_net
 
   specter:
     container_name: specter
     build:
       context: docker/specter
-    # Pass credentials for node config
     environment:
       - RPC_USER=${RPC_USER}
       - RPC_PASSWORD=${RPC_PASSWORD}
@@ -85,10 +82,14 @@ services:
     container_name: cpuminer
     build:
       context: docker/cpuminer
-    # Use variable defined in .env file for the user argument
     command: ["--url=stratum+tcp://datum:23334", "--user=${POOL_ADDRESS}", "--pass=x"]
     restart: always
     depends_on:
       - datum
-    # cpu limit 30% of the available cores to avoid overloading the system
     cpus: 0.3
+
+networks:
+  default:
+    internal: true  # isolates all services on this network from the internet
+  external_net:
+    driver: bridge  # standard bridge network with internet access

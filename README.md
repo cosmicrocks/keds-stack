@@ -29,6 +29,15 @@ KEDS is composed of the following key components:
     *   **[Specter Desktop](https://specter.solutions/)**: Included in the default `docker-compose.yaml`. Focuses on hardware wallet interaction and multisignature setups.
     *   **[Sparrow Wallet](https://sparrowwallet.com/)**: An alternative desktop wallet focusing on transaction control, privacy, and hardware wallet support. Requires manual configuration to connect to the KEDS Electrs instance.
 
+## Networking
+
+KEDS utilizes Docker networks to manage communication between its services and control external access:
+
+*   **`default` Network:** This is an internal-only network. Services connected *only* to this network (like `electrs` and `cpuminer` in the default configuration) cannot be directly accessed from outside the Docker host or the internet. This enhances security by isolating core components.
+*   **`external_net` Network:** This is a standard Docker bridge network. Services connected to this network (like `knots` and `datum` which need broader accessibility or potential future external connections) can communicate with each other and potentially be exposed to the host machine or external networks via published ports.
+
+This setup ensures that essential services like `knots` and `datum` can be reached by other services and potentially external tools (if ports are mapped), while services like `electrs` are primarily accessed through specific published ports or by other services within the Docker environment.
+
 ## Prerequisites
 
 Before deploying KEDS, ensure you have the following:
