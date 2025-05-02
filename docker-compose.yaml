@@ -7,7 +7,7 @@ services:
     build:
       context: docker/knots
       args:
-        - KNOTS_VERSION=27.1.knots20240801
+        - KNOTS_VERSION=28.1.knots20250305
     command: -rpcbind=0.0.0.0 -rpcallowip=0.0.0.0/0 -rpcuser=rpcuser -rpcpassword=rpcpassword
     volumes:
       - ${PWD}/data/bitcoin:/data/.bitcoin

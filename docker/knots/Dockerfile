@@ -39,7 +39,8 @@ RUN apk add --no-cache \
     git \
     libtool \
     linux-headers \
-    pkgconf
+    pkgconf \
+    cmake
 
 RUN tar zxf bitcoin-${KNOTS_VERSION}.tar.gz
 
