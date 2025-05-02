@@ -1,0 +1,33 @@
+#!/bin/sh
+set -e
+
+# Define the path for the nodes configuration
+NODE_CONFIG_DIR="/data/.specter/nodes"
+NODE_CONFIG_FILE="$NODE_CONFIG_DIR/knots.json"
+
+# Create the nodes directory if it doesn't exist
+mkdir -p "$NODE_CONFIG_DIR"
+
+# Create the node configuration file using runtime environment variables
+# Use default values if environment variables are not set (should not happen with docker-compose)
+cat <<EOF > "$NODE_CONFIG_FILE"
+{
+  "python_class": "cryptoadvance.specter.node.Node",
+  "fullpath": "$NODE_CONFIG_FILE",
+  "name": "knots",
+  "alias": "knots",
+  "autodetect": false,
+  "datadir": "",
+  "user": "${RPC_USER:-rpcuser}",
+  "password": "${RPC_PASSWORD:-rpcpassword}",
+  "port": "8332",
+  "host": "knots",
+  "protocol": "http",
+  "node_type": "BTC"
+}
+EOF
+
+echo "Generated Specter node config at $NODE_CONFIG_FILE"
+
+# Execute the original command (passed as arguments to this script)
+exec /usr/local/bin/python3 -m cryptoadvance.specter server --host 0.0.0.0

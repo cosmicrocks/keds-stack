@@ -71,9 +71,13 @@ services:
     container_name: specter
     build:
       context: docker/specter
+    # Pass credentials for node config
+    environment:
+      - RPC_USER=${RPC_USER}
+      - RPC_PASSWORD=${RPC_PASSWORD}
     restart: always
     volumes:
-      - ${PWD}/data/specter:/data
+      - ${PWD}/data/specter:/data/.specter
     ports:
       - "25441:25441"
 

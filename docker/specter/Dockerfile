@@ -47,10 +47,16 @@ RUN adduser --disabled-password \
     --gecos "" \
     "$USER"
 
-# Set user
+# Copy the entrypoint script FIRST
+COPY entrypoint.sh /entrypoint.sh
+
+# Make entrypoint script executable (must be done before switching user)
+RUN chmod +x /entrypoint.sh
+
+# Set user AFTER chmod
 USER $USER
 
-# Make config directory
+# Make config directory (as $USER)
 RUN mkdir -p "$DIR/.specter/"
 
 
@@ -58,8 +64,8 @@ RUN mkdir -p "$DIR/.specter/"
 COPY --from=builder /usr/local/lib/python3.10 /usr/local/lib/python3.10
 COPY --from=builder /usr/local/bin /usr/local/bin
 
-
 # Expose ports
 EXPOSE 25441 25442 25443
 
-ENTRYPOINT ["/usr/local/bin/python3", "-m", "cryptoadvance.specter", "server", "--host", "0.0.0.0"]
+# Set the entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
