@@ -65,5 +65,7 @@ services:
     container_name: specter
     image: lncm/specter-desktop:latest
     restart: always
+    volumes:
+      - ${PWD}/data/specter:/data
     ports:
       - "25441:25441"
