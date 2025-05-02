@@ -88,6 +88,7 @@ ARG DIR=/data
 COPY --from=builder /usr/local/bin/* /usr/local/bin/
 COPY --from=builder /tmp/bitcoin-${KNOTS_VERSION}/test/functional/test_framework /opt/bitcoin/test/functional/test_framework
 COPY --from=builder /tmp/bitcoin-${KNOTS_VERSION}/contrib/signet/miner           /opt/bitcoin/contrib/signet/miner
+COPY entrypoint.sh /entrypoint.sh
 
 RUN apk add --no-cache \
     python3 \
@@ -99,6 +100,9 @@ RUN adduser --disabled-password \
     --home "$DIR/" \
     --gecos "" \
     "$USER"
+
+# Make entrypoint script executable (must be done before switching user)
+RUN chmod +x /entrypoint.sh
 
 USER $USER
 
@@ -120,6 +124,8 @@ EXPOSE 8332 18332 18443 38332
 # ZMQ ports (for block hashes, raw blocks & raw transactions respectively)
 EXPOSE 8443 28332 28333
 
-CMD ["-zmqpubrawblock=tcp://0.0.0.0:28332", "-zmqpubrawtx=tcp://0.0.0.0:28333"]
+# Default arguments passed to the entrypoint script (credentials removed)
+CMD ["-zmqpubrawblock=tcp://0.0.0.0:28332", "-zmqpubrawtx=tcp://0.0.0.0:28333", "-rpcbind=0.0.0.0", "-rpcallowip=0.0.0.0/0"]
 
-ENTRYPOINT ["/usr/local/bin/bitcoind"]
+# Set the entrypoint script
+ENTRYPOINT ["/entrypoint.sh"]

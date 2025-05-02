@@ -37,10 +37,79 @@ Before deploying KEDS, ensure you have the following:
 *   Sufficient disk space for the Bitcoin blockchain (~800GB+).
 *   Adequate CPU and RAM resources (vary depending on usage, but recommend at least 4GB RAM and 2+ CPU cores).
 
+## Configuration
+
+KEDS uses a `.env` file in the project root directory to manage configuration settings like RPC credentials and pool addresses. This keeps sensitive information out of the main `docker-compose.yaml` file.
+
+1.  **Create the `.env` file:**
+    Create a file named `.env` in the same directory as the `docker-compose.yaml` file.
+
+2.  **Add Configuration Variables:**
+    Add the following variables to your `.env` file, replacing the example values with your desired settings:
+
+    ```env
+    # Bitcoin RPC Credentials used by Knots, Electrs, etc.
+    RPC_USER=rpcuser
+    RPC_PASSWORD=rpcpassword
+
+    # Pool Address used by DATUM and CPUMiner
+    POOL_ADDRESS=bc1qqjragv6053f64sqjkny683ltp8tgqe02e9esjm
+
+    # Optional Coinbase Tag for DATUM
+    COINBASE_TAG_SECONDARY="Cosmic Rocks"
+    ```
+
+    **Important:** If your `COINBASE_TAG_SECONDARY` contains spaces, enclose it in double quotes as shown.
+
+3.  **(Optional but Recommended) Add `.env` to `.gitignore**:
+    To prevent accidentally committing your credentials or custom settings to version control, add `.env` to your `.gitignore` file.
+
 ## Quick Start / Installation
 
 KEDS builds all components from source code during the installation process, providing a security advantage over using pre-built binaries that could potentially be compromised.
 
+1.  **Configure KEDS:** Create and populate the `.env` file as described in the [Configuration](#configuration) section above.
+2.  **Start the Stack:** Run the following command to build the images (if necessary) and start the containers in detached mode:
+
+    ```bash
+    docker compose up -d
+    ```
+
+    The initial build process, especially for Bitcoin Knots, can take a significant amount of time depending on your system's performance. Subsequent starts will be much faster.
+
+3.  **Monitor Logs (Optional):** You can view the logs for all services using:
+    ```bash
+    docker compose logs -f
+    ```
+    Or for a specific service (e.g., `knots`):
+    ```bash
+    docker compose logs -f knots
+    ```
+
+## Connecting Wallets
+
+### Specter Desktop
+
+Specter is included by default. Access it via `http://localhost:25441`. It should automatically detect the running Knots instance.
+
+### Sparrow Wallet
+
+1.  Download and install [Sparrow Wallet](https://sparrowwallet.com/).
+2.  Go to `Preferences` -> `Server`.
+3.  Select `Private Electrum` as the server type.
+4.  Enter `localhost` for the URL and `50001` for the Port.
+5.  Click `Test Connection`. It should connect successfully to the Electrs instance running within KEDS.
+
+## Stopping KEDS
+
+To stop the KEDS stack:
+
+```bash
+docker compose down
 ```
-docker-compose up -d
+
+To stop and remove the associated volumes (including blockchain data and wallet info - **use with caution!**):
+
+```bash
+docker compose down -v
 ```

@@ -8,7 +8,10 @@ services:
       context: docker/knots
       args:
         - KNOTS_VERSION=28.1.knots20250305
-    command: -rpcbind=0.0.0.0 -rpcallowip=0.0.0.0/0 -rpcuser=rpcuser -rpcpassword=rpcpassword
+    # Pass credentials as environment variables from .env file
+    environment:
+      - RPC_USER=${RPC_USER}
+      - RPC_PASSWORD=${RPC_PASSWORD}
     volumes:
       - ${PWD}/data/bitcoin:/data/.bitcoin
     restart: on-failure
@@ -27,8 +30,9 @@ services:
     build:
       context: docker/electrs
     environment:
-      BITCOIN_RPC_USER: "rpcuser"
-      BITCOIN_RPC_PASSWORD: "rpcpassword"
+      # Use variables defined in .env file
+      BITCOIN_RPC_USER: "${RPC_USER}"
+      BITCOIN_RPC_PASSWORD: "${RPC_PASSWORD}"
       ELECTRS_NETWORK: "bitcoin"
       ELECTRS_DAEMON_RPC_ADDR: "knots:8332"
       ELECTRS_DAEMON_P2P_ADDR: "knots:8333"
@@ -54,9 +58,11 @@ services:
       context: docker/datum
     environment:
       DATUM_RPCURL: "knots:8332"
-      DATUM_POOL_ADDRESS: "bc1qqjragv6053f64sqjkny683ltp8tgqe02e9esjm"
+      # Use variable defined in .env file
+      DATUM_POOL_ADDRESS: "${POOL_ADDRESS}"
       DATUM_COINBASE_TAG_PRIMARY: "DATUM Gateway"
-      DATUM_COINBASE_TAG_SECONDARY: "Cosmic Rocks"
+      # Use variable defined in .env file
+      DATUM_COINBASE_TAG_SECONDARY: "${COINBASE_TAG_SECONDARY}"
     ports:
       - "23334:23334"
       - "8081:8080"
@@ -75,7 +81,8 @@ services:
     container_name: cpuminer
     build:
       context: docker/cpuminer
-    command: ["--url=stratum+tcp://datum:23334", "--user=bc1qqjragv6053f64sqjkny683ltp8tgqe02e9esjm", "--pass=x"]
+    # Use variable defined in .env file for the user argument
+    command: ["--url=stratum+tcp://datum:23334", "--user=${POOL_ADDRESS}", "--pass=x"]
     restart: always
     depends_on:
       - datum

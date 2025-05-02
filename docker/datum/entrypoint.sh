@@ -30,7 +30,7 @@ set -e
 : "${DATUM_SAVE_SUBMITBLOCKS_DIR:=}"
 
 : "${DATUM_API_LISTEN_PORT:=8080}"
-
+: "${DATUM_API_ADMIN_PASSWORD:=admin}"
 # Expecting JSON array as string e.g. '["http://host1:port","http://host2:port"]'
 : "${DATUM_EXTRA_BLOCK_SUBMISSIONS_URLS:="[]"}"
 
@@ -85,7 +85,8 @@ cat <<EOF > /data/config.json
       "save_submitblocks_dir": "${DATUM_SAVE_SUBMITBLOCKS_DIR}"
   },
   "api": {
-      "listen_port": ${DATUM_API_LISTEN_PORT}
+      "listen_port": ${DATUM_API_LISTEN_PORT},
+      "admin_password": "${DATUM_API_ADMIN_PASSWORD}"
   },
   "extra_block_submissions": {
       "urls": ${DATUM_EXTRA_BLOCK_SUBMISSIONS_URLS}
