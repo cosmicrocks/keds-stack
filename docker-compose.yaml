@@ -63,9 +63,21 @@ services:
 
   specter:
     container_name: specter
-    image: lncm/specter-desktop:latest
+    build:
+      context: docker/specter
     restart: always
     volumes:
       - ${PWD}/data/specter:/data
     ports:
       - "25441:25441"
+
+  cpuminer:
+    container_name: cpuminer
+    build:
+      context: docker/cpuminer
+    command: ["--url=stratum+tcp://datum:23334", "--user=bc1qqjragv6053f64sqjkny683ltp8tgqe02e9esjm", "--pass=x"]
+    restart: always
+    depends_on:
+      - datum
+    # cpu limit 30% of the available cores to avoid overloading the system
+    cpus: 0.3

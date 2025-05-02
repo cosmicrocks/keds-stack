@@ -7,6 +7,7 @@ KEDS is a cohesive stack of Bitcoin infrastructure components. It bundles essent
 *   **Integrated Solution:** Provides a pre-configured set of compatible components, simplifying the setup of essential Bitcoin infrastructure.
 *   **Performance & Efficiency:** Leverages Bitcoin Knots for its optimizations and ElectRS for efficient wallet queries. Includes DATUM for optimized solo mining block template creation.
 *   **Wallet Choice:** Integrates with popular desktop wallets like Specter and Sparrow for user-friendly transaction and hardware wallet management.
+*   **Enhanced Security:** All components are built from source code rather than using pre-built binaries, eliminating the risk of compromised or tampered distributions.
 
 ## Components
 
@@ -17,6 +18,8 @@ KEDS is composed of the following key components:
 *   **[ElectRS (Electrum Rust Server)](https://github.com/romanz/electrs)**: An efficient implementation of the Electrum Server protocol. ElectRS indexes the Bitcoin blockchain maintained by Knots, allowing Electrum-compatible wallets to quickly query blockchain information (addresses, transactions, balances) without needing a full node themselves.
 
 *   **[DATUM Gateway](https://github.com/datum-project/datum)**: The DATUM Gateway implements lightweight, efficient, client-side decentralized block template creation. This allows for true solo mining by constructing block templates directly, reducing reliance on traditional mining pool infrastructure for this task.
+
+*   **[CPUMiner](https://github.com/pooler/cpuminer)**: A simple CPU-based Bitcoin miner included to help operators test and verify that the mining setup is working correctly without requiring specialized ASIC hardware.
 
 *   **Wallet Interface (Specter/Sparrow)**: Provides a user-friendly graphical interface for managing Bitcoin funds, transactions, and hardware wallets. KEDS includes Specter Desktop by default, but can be easily configured to work with Sparrow Wallet.
     *   **[Specter Desktop](https://specter.solutions/)**: Included in the default `docker-compose.yaml`. Focuses on hardware wallet interaction and multisignature setups.
@@ -31,6 +34,8 @@ Before deploying KEDS, ensure you have the following:
 *   Adequate CPU and RAM resources (vary depending on usage, but recommend at least 4GB RAM and 2+ CPU cores).
 
 ## Quick Start / Installation
+
+KEDS builds all components from source code during the installation process, providing a security advantage over using pre-built binaries that could potentially be compromised.
 
 ```
 docker-compose up -d
