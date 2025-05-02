@@ -1,0 +1,69 @@
+name: keds
+
+services:
+
+  knots:
+    container_name: knots
+    build:
+      context: docker/knots
+      args:
+        - KNOTS_VERSION=27.1.knots20240801
+    command: -rpcbind=0.0.0.0 -rpcallowip=0.0.0.0/0 -rpcuser=rpcuser -rpcpassword=rpcpassword
+    volumes:
+      - ${PWD}/data/bitcoin:/data/.bitcoin
+    restart: on-failure
+    ports:
+      # RPC interface
+      - "8332:8332"
+      # P2P network
+      - "8333:8333"
+      # ZMQ ports
+      - "8443:8443"
+
+  electrs:
+    container_name: electrs
+    depends_on:
+      - knots
+    build:
+      context: docker/electrs
+    environment:
+      BITCOIN_RPC_USER: "rpcuser"
+      BITCOIN_RPC_PASSWORD: "rpcpassword"
+      ELECTRS_NETWORK: "bitcoin"
+      ELECTRS_DAEMON_RPC_ADDR: "knots:8332"
+      ELECTRS_DAEMON_P2P_ADDR: "knots:8333"
+      ELECTRS_ELECTRUM_RPC_ADDR: "0.0.0.0:50001"
+      ELECTRS_SERVER_BANNER: "Electrs"
+      ELECTRS_INDEX_BATCH_SIZE: "2000"
+      ELECTRS_WAIT_DURATION_SECS: "1"
+      ELECTRS_MONITORING_ADDR: "0.0.0.0:4224"
+      ELECTRS_LOG_FILTERS: "INFO"
+      ELECTRS_DB_DIR: "/data" # Ensure this is set for the entrypoint
+    volumes:
+      - ${PWD}/data/electrs:/data
+    restart: always
+    ports:
+      - "50001:50001"
+      - "4224:4224" # Expose metrics port
+
+  datum:
+    container_name: datum
+    depends_on:
+      - knots
+    build:
+      context: docker/datum
+    environment:
+      DATUM_RPCURL: "knots:8332"
+      DATUM_POOL_ADDRESS: "bc1qqjragv6053f64sqjkny683ltp8tgqe02e9esjm"
+      DATUM_COINBASE_TAG_PRIMARY: "DATUM Gateway"
+      DATUM_COINBASE_TAG_SECONDARY: "Cosmic Rocks"
+    ports:
+      - "23334:23334"
+      - "8081:8080"
+
+  specter:
+    container_name: specter
+    image: lncm/specter-desktop:latest
+    restart: always
+    ports:
+      - "25441:25441"
