@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="keds.jpeg" alt="KEDS Logo" width="400"/>
+</p>
+
 # Knots Electrs Datum Specter/Sparrow (KEDS)
 
 KEDS is a cohesive stack of Bitcoin infrastructure components. It bundles essential services (Knots, Electrs, DATUM, and a choice of Specter or Sparrow Wallet) for interacting with the Bitcoin network, serving wallet requests, and enabling efficient solo mining.
