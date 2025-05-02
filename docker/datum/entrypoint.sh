@@ -117,4 +117,4 @@ echo "-------------------------"
 # Execute the main datum command, passing the config file
 # Replace 'datum' with the actual executable name if different
 # Replace '--config' with the actual config file argument if different
-exec datum --config /data/config.json "$@"
+exec /usr/bin/datum_gateway --config /data/config.json "$@"
