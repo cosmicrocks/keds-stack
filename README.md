@@ -102,14 +102,26 @@ Specter is included by default. Access it via `http://localhost:25441`. It shoul
 
 ## Stopping KEDS
 
-To stop the KEDS stack:
+To stop the KEDS stack (containers and networks):
 
 ```bash
 docker compose down
 ```
 
-To stop and remove the associated volumes (including blockchain data and wallet info - **use with caution!**):
+This command **does not** delete the data stored locally in the `./data` directory (blockchain data, wallet info, etc.), as KEDS uses bind mounts for persistence.
+
+To stop the stack and remove anonymous volumes (if any were created, though typically not used by KEDS core services):
 
 ```bash
 docker compose down -v
+```
+
+**To permanently delete all blockchain and wallet data:** You must manually delete the `./data` directory from your host machine after stopping the containers:
+
+```bash
+# First, stop the containers
+docker compose down
+
+# Then, remove the data directory (USE WITH EXTREME CAUTION!)
+rm -rf ./data
 ```
