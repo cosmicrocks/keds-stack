@@ -104,7 +104,7 @@ Specter is included by default. Access it via `http://localhost:25441`. It shoul
 ### Sparrow Wallet
 
 1.  Download and install [Sparrow Wallet](https://sparrowwallet.com/).
-2.  Go to `Preferences` -> `Server`.
+2.  Go to `Settings` -> `Server`.
 3.  Select `Private Electrum` as the server type.
 4.  Enter `localhost` for the URL and `50001` for the Port.
 5.  Click `Test Connection`. It should connect successfully to the Electrs instance running within KEDS.
@@ -118,12 +118,6 @@ docker compose down
 ```
 
 This command **does not** delete the data stored locally in the `./data` directory (blockchain data, wallet info, etc.), as KEDS uses bind mounts for persistence.
-
-To stop the stack and remove anonymous volumes (if any were created, though typically not used by KEDS core services):
-
-```bash
-docker compose down -v
-```
 
 **To permanently delete all blockchain and wallet data:** You must manually delete the `./data` directory from your host machine after stopping the containers:
 
