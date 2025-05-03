@@ -1,6 +1,27 @@
 name: keds
 services:
 
+  ts-knots:
+    build: ./docker/ts
+    container_name: ts-knots
+    hostname: knots # Use the same hostname for MagicDNS
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY} # Source from .env
+      - TS_STATE_DIR=/var/lib/tailscale
+      # Add variables needed by the entrypoint script, sourced from .env
+      - TS_DOMAIN=${TS_DOMAIN}
+      - P2P_PORT=${P2P_PORT:-8333} # Default to 8333 if not set in .env
+    devices:
+      - /dev/net/tun:/dev/net/tun # Required for Tailscale
+    cap_add:
+      - net_admin
+      - sys_module
+    # Add network connectivity
+    networks:
+      - default # For internal communication via localhost in shared network namespace
+      - external_net # For internet access to reach Tailscale control plane
+    restart: unless-stopped
+
   knots:
     container_name: knots
     build:
@@ -12,14 +33,7 @@ services:
       - RPC_PASSWORD=${RPC_PASSWORD}
     volumes:
       - ${PWD}/data/bitcoin:/data/.bitcoin
-    restart: on-failure
-    ports:
-      - "8332:8332"
-      - "8333:8333"
-      - "8443:8443"
-    networks:
-      - default
-      - external_net
+    network_mode: service:ts-knots
 
   electrs:
     container_name: electrs
@@ -46,6 +60,8 @@ services:
     ports:
       - "50001:50001"
       - "4224:4224"
+    networks:
+      - default
 
   datum:
     container_name: datum
@@ -90,6 +106,8 @@ services:
     depends_on:
       - datum
     cpus: 0.3
+    networks:
+      - default
 
 networks:
   default:
