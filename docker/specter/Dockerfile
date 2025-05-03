@@ -32,7 +32,7 @@ RUN pip3 install -r requirements.txt
 RUN pip3 install . --no-deps
 
 
-FROM python:3.10-slim-bookworm as final
+FROM python:3.10-slim-bookworm AS final
 
 ARG USER
 ARG DIR

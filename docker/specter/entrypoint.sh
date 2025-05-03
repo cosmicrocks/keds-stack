@@ -30,4 +30,4 @@ EOF
 echo "Generated Specter node config at $NODE_CONFIG_FILE"
 
 # Execute the original command (passed as arguments to this script)
-exec /usr/local/bin/python3 -m cryptoadvance.specter server --host 0.0.0.0
+exec /usr/local/bin/python3 -m cryptoadvance.specter server --host 0.0.0.0 --port 25441

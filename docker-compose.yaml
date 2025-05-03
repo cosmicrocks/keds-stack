@@ -77,6 +77,9 @@ services:
       - ${PWD}/data/specter:/data/.specter
     ports:
       - "25441:25441"
+    networks:
+      - default
+      - external_net
 
   cpuminer:
     container_name: cpuminer
