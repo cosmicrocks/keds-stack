@@ -46,6 +46,8 @@ services:
     ports:
       - "50001:50001"
       - "4224:4224"
+    networks:
+      - default
 
   datum:
     container_name: datum
@@ -90,6 +92,8 @@ services:
     depends_on:
       - datum
     cpus: 0.3
+    networks:
+      - default
 
 networks:
   default:
