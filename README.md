@@ -46,6 +46,40 @@ Before deploying KEDS, ensure you have the following:
 *   Sufficient disk space for the Bitcoin blockchain (~800GB+).
 *   Adequate CPU and RAM resources (vary depending on usage, but recommend at least 4GB RAM and 2+ CPU cores).
 
+### Data Storage Location
+
+By default, KEDS stores blockchain and wallet data in a `./data` directory within the project folder. If you wish to store this data on an external drive (e.g., a USB drive) to save space on your main drive, you can replace the `data` directory with a symbolic link *before* the first run.
+
+**On macOS:**
+
+Assuming your external drive is mounted at `/Volumes/keds`:
+
+```bash
+# Make sure the 'data' directory in your project folder doesn't exist yet
+# Create the target directory on your external drive if it doesn't exist
+mkdir -p /Volumes/keds/data
+# Create the symbolic link
+ln -s /Volumes/keds/data data
+```
+
+**On Ubuntu:**
+
+Assuming your external drive is mounted at `/media/cosmic/keds`:
+
+```bash
+# Make sure the 'data' directory in your project folder doesn't exist yet
+# Create the target directory on your external drive if it doesn't exist
+sudo mkdir -p /media/cosmic/keds/data
+# Optional: Adjust ownership if needed (replace 'your_user:your_group' if necessary)
+sudo chown $(whoami):$(whoami) /media/cosmic/keds/data
+# Create the symbolic link
+ln -s /media/cosmic/keds/data data
+```
+
+**Note for Docker Desktop on Linux:** If you are using Docker Desktop on Ubuntu/Linux, you may also need to add the path to your external drive (e.g., `/media/cosmic/keds` or `/media`) to the list of allowed paths in Docker Desktop's settings (`Preferences` -> `Resources` -> `File Sharing`). Docker needs explicit permission to access bind mount sources outside of standard locations like `/home`.
+
+**Important:** Ensure the symbolic link is created *before* you run `docker compose up` for the first time. If you've already run it, you'll need to stop the containers (`docker compose down`), move the existing `./data` directory contents to your external drive, remove the original `./data` directory, and then create the symbolic link.
+
 ## Configuration
 
 KEDS uses a `.env` file in the project root directory to manage configuration settings like RPC credentials and pool addresses. This keeps sensitive information out of the main `docker-compose.yaml` file.
