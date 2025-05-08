@@ -10,6 +10,11 @@ services:
     environment:
       - RPC_USER=${RPC_USER}
       - RPC_PASSWORD=${RPC_PASSWORD}
+      - ZMQ_PUB_RAW_BLOCK=tcp://0.0.0.0:28332
+      - ZMQ_PUB_RAW_TX=tcp://0.0.0.0:28333
+      - RPC_BIND=0.0.0.0
+      - RPC_ALLOW_IP=0.0.0.0/0
+      - DATA_CARRIER_SIZE=0
     volumes:
       - ${PWD}/data/bitcoin:/data/.bitcoin
     restart: on-failure
