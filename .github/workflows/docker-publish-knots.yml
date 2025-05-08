@@ -3,6 +3,8 @@ name: Docker Publish Knots
 on:
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build-and-push-knots:
@@ -33,7 +35,7 @@ jobs:
       with:
         context: ./docker/knots
         file: ./docker/knots/Dockerfile
-        push: true
+        push: ${{ github.event_name == 'push' }}
         platforms: ${{ matrix.platform }}
         tags: ghcr.io/${{ github.repository_owner }}/knots:28.1.knots20250305
         cache-from: type=gha
@@ -43,6 +45,7 @@ jobs:
 
   sign-image:
     needs: build-and-push-knots
+    if: github.event_name == 'push' # Only run on push events
     runs-on: ubuntu-latest
     permissions:
       packages: write # Needed to push signature to GHCR
