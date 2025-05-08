@@ -15,6 +15,7 @@ services:
       - RPC_BIND=0.0.0.0
       - RPC_ALLOW_IP=0.0.0.0/0
       - DATA_CARRIER_SIZE=0
+      - REINDEX=1
     volumes:
       - ${PWD}/data/bitcoin:/data/.bitcoin
     restart: on-failure

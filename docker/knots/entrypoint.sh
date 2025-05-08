@@ -19,6 +19,7 @@ ZMQ_PUB_RAW_TX=${ZMQ_PUB_RAW_TX:-tcp://0.0.0.0:28333}
 RPC_BIND=${RPC_BIND:-0.0.0.0}
 RPC_ALLOW_IP=${RPC_ALLOW_IP:-0.0.0.0/0}
 DATA_CARRIER_SIZE=${DATA_CARRIER_SIZE:-0} # Default to 0 (standard)
+REINDEX=${REINDEX:-0}
 
 # Create the Bitcoin data directory if it doesn't exist
 # This is also done in the Dockerfile, but good to ensure here
@@ -41,6 +42,9 @@ zmqpubrawtx=${ZMQ_PUB_RAW_TX}
 
 # Data Carrier Size
 datacarrier=${DATA_CARRIER_SIZE}
+
+# Reindex
+reindex=${REINDEX}
 
 # Add any other static configurations you need below
 # For example:
