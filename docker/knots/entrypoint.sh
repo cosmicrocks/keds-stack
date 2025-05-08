@@ -20,7 +20,7 @@ RPC_BIND=${RPC_BIND:-0.0.0.0}
 RPC_ALLOW_IP=${RPC_ALLOW_IP:-0.0.0.0/0}
 DATA_CARRIER_SIZE=${DATA_CARRIER_SIZE:-0} # Default to 0 (standard)
 REINDEX=${REINDEX:-0}
-
+REINDEX_CHAINSTATE=${REINDEX_CHAINSTATE:-0}
 # Create the Bitcoin data directory if it doesn't exist
 # This is also done in the Dockerfile, but good to ensure here
 mkdir -p "$BITCOIN_DATA_DIR"
@@ -43,9 +43,6 @@ zmqpubrawtx=${ZMQ_PUB_RAW_TX}
 # Data Carrier Size
 datacarrier=${DATA_CARRIER_SIZE}
 
-# Reindex
-reindex=${REINDEX}
-
 # Add any other static configurations you need below
 # For example:
 # server=1
@@ -53,6 +50,14 @@ reindex=${REINDEX}
 # printtoconsole=1
 
 EOF
+
+# Conditionally add reindex flags
+if [ "${REINDEX}" -eq 1 ]; then
+  echo "reindex=1" >> "${CONFIG_FILE}"
+fi
+if [ "${REINDEX_CHAINSTATE}" -eq 1 ]; then
+  echo "reindex-chainstate=1" >> "${CONFIG_FILE}"
+fi
 
 echo "Starting bitcoind..."
 # Pass any additional command-line arguments ("$@")

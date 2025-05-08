@@ -15,7 +15,8 @@ services:
       - RPC_BIND=0.0.0.0
       - RPC_ALLOW_IP=0.0.0.0/0
       - DATA_CARRIER_SIZE=0
-      - REINDEX=1
+      - REINDEX=0 # 1 to reindex blocks
+      - REINDEX_CHAINSTATE=0 # 1 to reindex chainstate (only utxo set, not txindex)
     volumes:
       - ${PWD}/data/bitcoin:/data/.bitcoin
     restart: on-failure
