@@ -1,4 +1,4 @@
-FROM ubuntu as base
+FROM ubuntu AS base
 
 # Set environment variables to non-interactive
 ENV DEBIAN_FRONTEND=noninteractive
