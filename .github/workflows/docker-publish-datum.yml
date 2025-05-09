@@ -18,7 +18,7 @@ jobs:
         platform:
           - linux/amd64
           - linux/arm64
-          # - linux/arm/v7 # Datum may not support ARMv7, let's comment this out for now
+          - linux/arm/v7
 
     steps:
     - name: Prepare
