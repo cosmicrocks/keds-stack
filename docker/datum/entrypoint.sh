@@ -49,6 +49,10 @@ set -e
 : "${DATUM_POOLED_MINING_ONLY:=false}"
 : "${DATUM_PROTOCOL_GLOBAL_TIMEOUT:=60}"
 
+: "${DATUM_POOL_HOST:="datum-beta1.mine.ocean.xyz"}"
+: "${DATUM_POOL_PORT:=28915}"
+: "${DATUM_POOL_PUBKEY:="f21f2f0ef0aa1970468f22bad9bb7f4535146f8e4a8f646bebc93da3d89b1406f40d032f09a417d94dc068055df654937922d2c89522e3e8f6f0e649de473003"}"
+
 # Create the config directory if it doesn't exist
 mkdir -p /data
 
@@ -102,6 +106,9 @@ cat <<EOF > /data/config.json
       "log_level_file": ${DATUM_LOG_LEVEL_FILE}
   },
   "datum": {
+      "pool_host": "${DATUM_POOL_HOST}",
+      "pool_port": ${DATUM_POOL_PORT},
+      "pool_pubkey": "${DATUM_POOL_PUBKEY}",
       "pool_pass_workers": ${DATUM_POOL_PASS_WORKERS},
       "pool_pass_full_users": ${DATUM_POOL_PASS_FULL_USERS},
       "always_pay_self": ${DATUM_ALWAYS_PAY_SELF},

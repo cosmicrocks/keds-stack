@@ -64,10 +64,10 @@ services:
     build:
       context: docker/datum
     environment:
-      DATUM_RPCURL: "knots:8332"
       DATUM_POOL_ADDRESS: "${POOL_ADDRESS}"
       DATUM_COINBASE_TAG_PRIMARY: "DATUM Gateway"
       DATUM_COINBASE_TAG_SECONDARY: "${COINBASE_TAG_SECONDARY}"
+      DATUM_POOL_HOST: "datum-beta1.mine.ocean.xyz" # set to "" for solo mining
     ports:
       - "23334:23334"
       - "8080:8080"
