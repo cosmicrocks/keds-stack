@@ -17,7 +17,7 @@ KEDS is a cohesive stack of Bitcoin infrastructure components. It bundles essent
 
 KEDS is composed of the following key components:
 
-*   **[Bitcoin Knots](https://bitcoinknots.org/)**: A full node implementation of the Bitcoin protocol. It is based on Bitcoin Core but includes various enhancements and features aimed at improving performance and robustness. Knots handles the core blockchain data synchronization and validation.
+*   **[Bitcoin Knots](https://bitcoinknots.org/)**: A full node implementation of the Bitcoin protocol. It is based on Bitcoin Core but includes various enhancements and features aimed at improving performance and robustness. Knots handles the core blockchain data synchronization and validation. By default, KEDS configures Knots to align with the [OCEAN Recommended mining pool policy](https://ocean.xyz/docs/templateselection).
 
 *   **[Electrs (Electrum Rust Server)](https://github.com/romanz/electrs)**: An efficient implementation of the Electrum Server protocol. Electrs indexes the Bitcoin blockchain maintained by Knots, allowing Electrum-compatible wallets to quickly query blockchain information (addresses, transactions, balances) without needing a full node themselves.
 

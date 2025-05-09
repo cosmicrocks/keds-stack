@@ -10,13 +10,14 @@ services:
     environment:
       - RPC_USER=${RPC_USER}
       - RPC_PASSWORD=${RPC_PASSWORD}
-      - ZMQ_PUB_RAW_BLOCK=tcp://0.0.0.0:28332
-      - ZMQ_PUB_RAW_TX=tcp://0.0.0.0:28333
-      - RPC_BIND=0.0.0.0
-      - RPC_ALLOW_IP=0.0.0.0/0
-      - DATA_CARRIER_SIZE=0
       - REINDEX=0 # 1 to reindex blocks
       - REINDEX_CHAINSTATE=0 # 1 to reindex chainstate (only utxo set, not txindex)
+      # Performance Tuning for 1cpu 1GB RAM
+      - DB_CACHE=${DB_CACHE:-100}
+      - MAX_CONNECTIONS=${MAX_CONNECTIONS:-20}
+      - RPC_WORK_QUEUE=${RPC_WORK_QUEUE:-8}
+      - MAX_MEMPOOL=${MAX_MEMPOOL:-50}
+      - BLOCK_RECONSTRUCTION_EXTRA_TXN=${BLOCK_RECONSTRUCTION_EXTRA_TXN:-5000}
     volumes:
       - ${PWD}/data/bitcoin:/data/.bitcoin
     restart: on-failure
