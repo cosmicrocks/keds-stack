@@ -1,4 +1,4 @@
-name: Docker Publish Knots
+name: Docker Publish Datum
 
 on:
   push:
@@ -18,13 +18,14 @@ jobs:
         platform:
           - linux/amd64
           - linux/arm64
-          - linux/arm/v7
+          # - linux/arm/v7 # Datum may not support ARMv7, let's comment this out for now
 
     steps:
     - name: Prepare
       run: |
         platform=${{ matrix.platform }}
         echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+        echo "DATUM_TAG=v0.3.1beta" >> $GITHUB_ENV
 
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -46,14 +47,14 @@ jobs:
       id: build
       uses: docker/build-push-action@v5
       with:
-        context: ./docker/knots
-        file: ./docker/knots/Dockerfile
+        context: ./docker/datum
+        file: ./docker/datum/Dockerfile
         # Only push images to the registry on push events
         push: ${{ github.event_name == 'push' }}
         platforms: ${{ matrix.platform }}
-        outputs: type=image,push-by-digest=true,name=ghcr.io/${{ github.repository_owner }}/knots,push=${{ github.event_name == 'push' }}
+        outputs: type=image,push-by-digest=true,name=ghcr.io/${{ github.repository_owner }}/datum,push=${{ github.event_name == 'push' }}
         build-args: |
-          KNOTS_VERSION=28.1.knots20250305
+          DATUM_VERSION=${{ env.DATUM_TAG }}
 
     - name: Export digest
       if: github.event_name == 'push'
@@ -98,14 +99,16 @@ jobs:
 
       - name: Create and push manifest
         working-directory: ${{ runner.temp }}/digests
+        env:
+          DATUM_TAG: ${{ env.DATUM_TAG }} # Make sure DATUM_TAG is available
         run: |
           # Create and push the manifest for multi-arch support
-          docker buildx imagetools create -t ghcr.io/${{ github.repository_owner }}/knots:28.1.knots20250305 \
-            $(printf 'ghcr.io/${{ github.repository_owner }}/knots@sha256:%s ' *)
+          docker buildx imagetools create -t ghcr.io/${{ github.repository_owner }}/datum:${DATUM_TAG} \
+            $(printf 'ghcr.io/${{ github.repository_owner }}/datum@sha256:%s ' *)
 
           # Also create latest tag
-          docker buildx imagetools create -t ghcr.io/${{ github.repository_owner }}/knots:latest \
-            $(printf 'ghcr.io/${{ github.repository_owner }}/knots@sha256:%s ' *)
+          docker buildx imagetools create -t ghcr.io/${{ github.repository_owner }}/datum:latest \
+            $(printf 'ghcr.io/${{ github.repository_owner }}/datum@sha256:%s ' *)
 
   sign-image:
     needs: merge
@@ -132,6 +135,7 @@ jobs:
       - name: Sign the multi-arch image
         env:
           COSIGN_EXPERIMENTAL: "true" # Enable keyless signing
+          DATUM_TAG: ${{ env.DATUM_TAG }} # Make sure DATUM_TAG is available
         run: |
-          cosign sign --yes ghcr.io/${{ github.repository_owner }}/knots:28.1.knots20250305
-          cosign sign --yes ghcr.io/${{ github.repository_owner }}/knots:latest
+          cosign sign --yes ghcr.io/${{ github.repository_owner }}/datum:${DATUM_TAG}
+          cosign sign --yes ghcr.io/${{ github.repository_owner }}/datum:latest

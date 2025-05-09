@@ -63,6 +63,8 @@ services:
       - knots
     build:
       context: docker/datum
+      args:
+        - DATUM_VERSION=${DATUM_VERSION:-v0.3.1beta}
     environment:
       DATUM_POOL_ADDRESS: "${POOL_ADDRESS}"
       DATUM_COINBASE_TAG_PRIMARY: "DATUM Gateway"

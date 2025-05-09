@@ -13,6 +13,9 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 FROM base AS build
+
+ARG DATUM_VERSION=main
+
 RUN apt-get update && apt-get install -y \
     cmake \
     make \
@@ -23,7 +26,7 @@ RUN apt-get update && apt-get install -y \
 
 # Clone the DATUM Gateway repository
 # Consider using ARG for version control
-RUN git clone https://github.com/OCEAN-xyz/datum_gateway.git
+RUN git clone --branch ${DATUM_VERSION} https://github.com/OCEAN-xyz/datum_gateway.git
 
 # Build DATUM Gateway
 RUN mkdir /datum_gateway/build
