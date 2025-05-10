@@ -4,7 +4,7 @@ set -e
 # Define default values or ensure required variables are set
 : "${DATUM_RPCUSER:=rpcuser}"
 : "${DATUM_RPCPASSWORD:=rpcpassword}"
-: "${DATUM_RPCURL:=knots:18443}"
+: "${DATUM_RPCURL:=knots:8332}"
 : "${DATUM_WORK_UPDATE_SECONDS:=40}"
 : "${DATUM_NOTIFY_FALLBACK:=true}"
 

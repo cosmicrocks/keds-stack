@@ -17,6 +17,7 @@ RPC_PASSWORD=${RPC_PASSWORD:-rpcpassword}
 ZMQ_PUB_RAW_BLOCK=${ZMQ_PUB_RAW_BLOCK:-tcp://0.0.0.0:8432}
 ZMQ_PUB_RAW_TX=${ZMQ_PUB_RAW_TX:-tcp://0.0.0.0:8431}
 RPC_BIND=${RPC_BIND:-0.0.0.0}
+RPC_PORT=${RPC_PORT:-8332}
 RPC_ALLOW_IP=${RPC_ALLOW_IP:-0.0.0.0/0}
 DATA_CARRIER_SIZE=${DATA_CARRIER_SIZE:-1}
 REINDEX=${REINDEX:-0}
@@ -77,6 +78,7 @@ rpcuser=${RPC_USER}
 rpcpassword=${RPC_PASSWORD}
 # Consider using cookie-based auth or rpcauth instead.
 rpcbind=${RPC_BIND}
+rpcport=${RPC_PORT}
 rpcallowip=${RPC_ALLOW_IP}
 
 # ======== ZMQ (for Electrs, etc.) ========
