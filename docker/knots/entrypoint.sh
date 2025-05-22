@@ -61,10 +61,6 @@ BLOCK_MAX_WEIGHT=${BLOCK_MAX_WEIGHT:-3985000}
 BLOCK_MIN_TX_FEE=${BLOCK_MIN_TX_FEE:-0.00001}
 BLOCK_PRIORITY_SIZE=${BLOCK_PRIORITY_SIZE:-0}
 
-# Create the Bitcoin data directory if it doesn't exist
-# This is also done in the Dockerfile, but good to ensure here
-mkdir -p "$BITCOIN_DATA_DIR"
-
 echo "Generating bitcoin.conf..."
 cat << EOF > "$CONFIG_FILE"
 # Bitcoin Core Configuration File
