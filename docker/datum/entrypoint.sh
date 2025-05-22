@@ -3,7 +3,6 @@ set -e
 
 # Create configuration directory
 CONFIG_DIR="/data/config"
-mkdir -p ${CONFIG_DIR}
 
 # Define default values or ensure required variables are set
 : "${DATUM_RPCUSER:=rpcuser}"
