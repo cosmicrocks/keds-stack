@@ -61,6 +61,10 @@ BLOCK_MAX_WEIGHT=${BLOCK_MAX_WEIGHT:-3985000}
 BLOCK_MIN_TX_FEE=${BLOCK_MIN_TX_FEE:-0.00001}
 BLOCK_PRIORITY_SIZE=${BLOCK_PRIORITY_SIZE:-0}
 
+# Datum Settings
+DATUM_HOST=${DATUM_HOST:-127.0.0.1}
+DATUM_PORT=${DATUM_PORT:-8080}
+
 echo "Generating bitcoin.conf..."
 cat << EOF > "$CONFIG_FILE"
 # Bitcoin Core Configuration File
@@ -111,6 +115,7 @@ blockmaxsize=${BLOCK_MAX_SIZE}
 blockmaxweight=${BLOCK_MAX_WEIGHT}
 blockmintxfee=${BLOCK_MIN_TX_FEE}
 blockprioritysize=${BLOCK_PRIORITY_SIZE}
+blocknotify=${BITCOIN_DATA_DIR}/blocknotify.sh
 
 EOF
 
@@ -121,6 +126,20 @@ fi
 if [ "${REINDEX_CHAINSTATE}" -eq 1 ]; then
   echo "reindex-chainstate=1" >> "${CONFIG_FILE}"
 fi
+
+# Generate block notify script for datum
+cat << 'EOF' > "${BITCOIN_DATA_DIR}/blocknotify.sh"
+#!/bin/sh
+# This script is called when a block is connected to the main chain
+# It will trigger the datum script to update the datum
+    wget -qO - http://${DATUM_HOST}:${DATUM_PORT}/NOTIFY
+EOF
+
+# Make the script executable
+chmod +x "${BITCOIN_DATA_DIR}/blocknotify.sh"
+
+# Add blocknotify to bitcoin.conf
+echo "blocknotify=${BITCOIN_DATA_DIR}/blocknotify.sh" >> "${CONFIG_FILE}"
 
 echo "Starting bitcoind..."
 # Pass any additional command-line arguments ("$@")
