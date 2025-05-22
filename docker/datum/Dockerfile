@@ -47,6 +47,11 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 # Copy the binary
 COPY --from=build /datum_gateway/build/datum_gateway /usr/bin/datum_gateway
 
+# Install adduser package
+RUN apt-get update && apt-get install -y \
+    adduser \
+    && rm -rf /var/lib/apt/lists/*
+
 # Create a non-root user
 RUN adduser --disabled-password \
     --home "$DIR/" \
