@@ -61,8 +61,8 @@ RUN adduser --disabled-password \
 # Switch to non-root user
 USER $USER
 
-# Create data directory (owned by USER)
-RUN mkdir -p "$DIR/"
+# Create data directory structure (owned by USER)
+RUN mkdir -p "$DIR/config/"
 
 # Expose volume containing datum data
 VOLUME $DIR/

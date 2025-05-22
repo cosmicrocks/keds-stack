@@ -1,6 +1,10 @@
 #!/bin/sh
 set -e
 
+# Create configuration directory
+CONFIG_DIR="/data/config"
+mkdir -p ${CONFIG_DIR}
+
 # Define default values or ensure required variables are set
 : "${DATUM_RPCUSER:=rpcuser}"
 : "${DATUM_RPCPASSWORD:=rpcpassword}"
@@ -54,7 +58,7 @@ set -e
 : "${DATUM_POOL_PUBKEY:="f21f2f0ef0aa1970468f22bad9bb7f4535146f8e4a8f646bebc93da3d89b1406f40d032f09a417d94dc068055df654937922d2c89522e3e8f6f0e649de473003"}"
 
 # Generate datum config file from environment variables
-cat <<EOF > /data/config.json
+cat <<EOF > ${CONFIG_DIR}/config.json
 {
   "bitcoind": {
       "rpcuser": "${DATUM_RPCUSER}",
@@ -116,10 +120,10 @@ cat <<EOF > /data/config.json
 EOF
 
 echo "Generated datum config:"
-cat /data/config.json
+cat ${CONFIG_DIR}/config.json
 echo "-------------------------"
 
 # Execute the main datum command, passing the config file
 # Replace 'datum' with the actual executable name if different
 # Replace '--config' with the actual config file argument if different
-exec /usr/bin/datum_gateway --config /data/config.json "$@"
+exec /usr/bin/datum_gateway --config ${CONFIG_DIR}/config.json "$@"
