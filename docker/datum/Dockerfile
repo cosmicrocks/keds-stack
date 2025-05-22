@@ -36,11 +36,30 @@ RUN make -j$(nproc)
 
 FROM base AS result
 
+# Define user and data directory
+ARG USER=datum
+ARG DIR=/data
+
 # Copy and set up the entrypoint script
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Copy the binary
 COPY --from=build /datum_gateway/build/datum_gateway /usr/bin/datum_gateway
+
+# Create a non-root user
+RUN adduser --disabled-password \
+    --home "$DIR/" \
+    --gecos "" \
+    "$USER"
+
+# Switch to non-root user
+USER $USER
+
+# Create data directory (owned by USER)
+RUN mkdir -p "$DIR/"
+
+# Expose volume containing datum data
+VOLUME $DIR/
 
 ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]

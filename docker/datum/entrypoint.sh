@@ -53,9 +53,6 @@ set -e
 : "${DATUM_POOL_PORT:=28915}"
 : "${DATUM_POOL_PUBKEY:="f21f2f0ef0aa1970468f22bad9bb7f4535146f8e4a8f646bebc93da3d89b1406f40d032f09a417d94dc068055df654937922d2c89522e3e8f6f0e649de473003"}"
 
-# Create the config directory if it doesn't exist
-mkdir -p /data
-
 # Generate datum config file from environment variables
 cat <<EOF > /data/config.json
 {
