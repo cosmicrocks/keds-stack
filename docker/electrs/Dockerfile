@@ -10,11 +10,16 @@ RUN apt-get install -qqy librocksdb-dev curl git
 FROM base AS electrs-build
 RUN apt-get install -qqy cargo clang cmake
 
+# Accept version as build argument
+ARG ELECTRS_VERSION=v0.10.9
+
 # clone the electrs repository
 RUN git clone https://github.com/romanz/electrs.git
 
 # Install electrs
 WORKDIR /electrs
+# Checkout the specific version
+RUN git checkout ${ELECTRS_VERSION}
 ENV ROCKSDB_INCLUDE_DIR=/usr/include
 ENV ROCKSDB_LIB_DIR=/usr/lib
 RUN cargo install --locked --path .
