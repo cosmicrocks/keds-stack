@@ -2,12 +2,37 @@
 # This script acts as an entrypoint for the bitcoind container.
 # It retrieves RPC credentials and other configurations from environment
 # variables, generates a bitcoin.conf file, and then starts bitcoind.
+#
+# Network Configuration:
+# - Set NETWORK environment variable to: mainnet (default), testnet, or regtest
+# - Invalid network values will cause the script to exit with an error
 
 set -e
 
 # Default Bitcoin data directory, should match DIR in Dockerfile
 BITCOIN_DATA_DIR=${BITCOIN_DATA_DIR:-/data/.bitcoin}
 CONFIG_FILE="${BITCOIN_DATA_DIR}/bitcoin.conf"
+
+# Network configuration - validate and set network flag
+NETWORK=${NETWORK:-mainnet}
+case "${NETWORK}" in
+  mainnet)
+    NETWORK_FLAG=""
+    echo "Starting bitcoind on mainnet"
+    ;;
+  testnet)
+    NETWORK_FLAG="-testnet"
+    echo "Starting bitcoind on testnet"
+    ;;
+  regtest)
+    NETWORK_FLAG="-regtest"
+    echo "Starting bitcoind on regtest"
+    ;;
+  *)
+    echo "Error: Invalid NETWORK value '${NETWORK}'. Must be one of: mainnet, testnet, regtest"
+    exit 1
+    ;;
+esac
 
 # Use provided RPC user/password or fallback to defaults
 RPC_USER=${RPC_USER:-rpcuser}
@@ -142,5 +167,5 @@ chmod +x "${BITCOIN_DATA_DIR}/blocknotify.sh"
 echo "blocknotify=${BITCOIN_DATA_DIR}/blocknotify.sh" >> "${CONFIG_FILE}"
 
 echo "Starting bitcoind..."
-# Pass any additional command-line arguments ("$@")
-exec /usr/local/bin/bitcoind -conf="${CONFIG_FILE}" "$@"
+# Pass any additional command-line arguments ("$@") and network flag
+exec /usr/local/bin/bitcoind -conf="${CONFIG_FILE}" ${NETWORK_FLAG} "$@"
